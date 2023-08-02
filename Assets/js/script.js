@@ -32,7 +32,6 @@ $(function () {
       }
       else if (currentHour < i) {
         singleTimeBlock.addClass("future");
-        singleTimeBlock.removeClass("present");
       }
     })
   }
