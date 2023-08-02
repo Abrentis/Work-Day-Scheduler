@@ -6,7 +6,7 @@ As a business employee, my schedule is tight. I have to meet deadlines, attend m
 
 ## Usage
 
-Here is an example preview of the website:
+Here is an example preview of the website: https://abrentis.github.io/Work-Day-Scheduler/
 
 ![Image of what the website looks like upon opening it for the first time](./Assets/images/scheduler-website.jpg)
 
