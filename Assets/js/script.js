@@ -1,47 +1,52 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
 $(function () {
-  var containerDiv = $(".container-lg");
+  // Declared variables to target the family of time blocks and the family of save buttons.
   var timeBlock = $(".time-block");
   var saveButton = $(".saveBtn");
-  var textInputEl = $("textarea");
-  var textInput = textInputEl.innerHTML;
 
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-
+  // On-click function that stores entered text of each individual time block to local storage.
   $(saveButton).click(function() {
     var divContainer = $(this).parent();
-    console.log(divContainer);
     var divContainerId = divContainer.attr("id");
     localStorage.setItem(divContainerId, divContainerId);
-    console.log(localStorage);
+
     var textareaValue = divContainer.find("textarea").val().trim();
     localStorage.setItem("text-" + divContainerId, JSON.stringify(textareaValue));
   })
 
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  
+  /*
+    Declared 'i' outside of the function scheduleColor to allow the value of 'i' to dynamically update so that
+    the timeblock.each(function()) correctly applies the appropriate class that changes the background color of each time block.
+    This function is called every time the page is opened or refreshed so that each time block has the correct background color.
+  */
+  var i = 8;
+  function scheduleColor() {
+    timeBlock.each(function() {
+      var singleTimeBlock = $(this);
+      var currentHour = dayjs().format("H");
+      i++;
+      if (currentHour > i) {
+        singleTimeBlock.addClass("past");
+      }
+      else if (currentHour == i) {
+        singleTimeBlock.addClass("present");
+      }
+      else if (currentHour < i) {
+        singleTimeBlock.addClass("future");
+        singleTimeBlock.removeClass("present");
+      }
+    })
+  }
+  scheduleColor();
 
-
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-
+  /*
+    When the page is opened or refreshed, the function renderStorage() gets the values stored in local storage and applies
+    them to their corresponding text areas that were saved within their respective time blocks.
+  */
   function renderStorage() {
     timeBlock.each(function() {
       var timeBlockId = $(this).attr("id");
       var timeBlockText = $(this).find("textarea");
-      for (var i = 0; i < 9; i++) {
+      for (var i = 9; i < 18; i++) {
         var hourIndex = "hour-" + i;
         if (hourIndex == timeBlockId) {
           var textareaText = JSON.parse(localStorage.getItem("text-" + timeBlockId));
@@ -53,5 +58,12 @@ $(function () {
     })
   }
   renderStorage();
-  // TODO: Add code to display the current date in the header of the page.
+
+  // Shows the day of the week, date, and current time that is dynamically updated.
+  function currentTime() {
+    var today = dayjs();
+    $('#currentDay').text(today.format('dddd, MMM D, YYYY h:mm:ss'));
+  }
+  currentTime();
+  setInterval(currentTime, 1000);
 });
